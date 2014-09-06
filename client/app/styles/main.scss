@@ -1,0 +1,140 @@
+$icon-font-path: "../bower_components/bootstrap-sass-official/assets/fonts/bootstrap/";
+// bower:scss
+@import "bootstrap-sass-official/assets/stylesheets/bootstrap.scss";
+// endbower
+
+@import 'compass/css3/filter';
+
+
+/* Space out content a bit */
+body {
+  padding-top: 0px;
+  padding-bottom: 20px;
+}
+.page-header {
+    padding-bottom: 4px;
+    margin: 0 0 10px;
+    border-bottom: 1px solid #eeeeee;
+}
+
+/* Responsive: Portrait tablets and up */
+@media screen and (min-width: 768px) {
+  /* Remove the padding we set earlier */
+  .header,
+  .marketing,
+  .footer {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  /* Space out the masthead */
+  .header {
+    margin-bottom: 5px;
+  }
+  /* Remove the bottom border on the jumbotron for visual effect */
+  .jumbotron {
+    border-bottom: 0;
+  }
+}
+
+
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
+}
+
+#wvHost {
+}
+
+div.menu {
+    margin:0  0 15px 0;
+    padding: 0;
+}
+
+div.urlBar {
+    margin: 15px 0 0;
+}
+iframe {
+    padding: 15px;
+    width: 360px;
+    height: 550px;
+}
+
+iframe.nomenu {
+    height: 585px;
+}
+
+iframe.noheader {
+    height: 585px;
+}
+
+iframe.noheader.nomenu {
+    height: 620px;
+}
+
+div.iframeContainer {
+    padding:0;
+    border: 1px solid #ccc;
+    position:relative;
+}
+
+div.webviewer.active {
+
+    iframe {
+        border: 2px solid black;
+        background: #ffffff;
+    }
+    
+    div.overlay {
+        display: none;
+        
+    }   
+    
+    .input-group-addon {
+        background: #3276b1;
+        color: #fff;
+    }
+}
+
+div.mainConsole {
+    .input-group-addon {
+        background: #3276b1;
+        color: #fff;
+    }
+}
+
+div.overlay {
+    position: absolute;
+    top:0px;
+    left:0px;
+    width: 100%;
+    height: 100%;
+    padding:0;
+    display: block;
+    z-index:5;
+    opacity:0.9;
+}   
+
+.notShown {
+    opacity: 0;
+}
+
+iframe.master {
+    height: 240px;
+    width:100%;    
+}
+
+.titleBar {
+    padding:0;
+    
+    h3 {
+        margin:0;
+        display: block;
+    }
+    
+    button {
+        visibility: visible;
+    }
+    
+    button.invisible {
+        visibility: hidden;
+    }
+}
