@@ -18,7 +18,30 @@
     <div class="container" ng-cloak ng-controller="MainCtrl">
         <div class="page-header">
             <h1>Anvil <small>Irontec mobile development system</small></h1>
-            <a href="#" ng-click="launchInit();">Init</a> · <a href="#" ng-click="launchResume();">Resume</a>
+            <div class="row">
+                <div class="col-lg-12">
+            
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <label>
+                                <input type="checkbox" ng-model="mainConfig.autoInit" ng-true-value="1" ng-false-value="0">
+                                autoInit
+                            </label>
+                        </span>
+                        <input type="text" class="form-control" placeholder="URL to JSON menu" ng-model="mainConfig.JSONMenu"  ng-change="change=1" ng-init="change=0" ng-blur="change == 0||loadCurrentMenu()">
+                        <div class="input-group-btn">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Actions <span class="caret"></span></button>
+                            <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                <li><a href="#" ng-click="loadCurrentMenu();">Reload Menu</a></li>
+                                <li><a href="#" ng-click="launchInit();">Init</a></li>
+                                <li><a href="#" ng-click="launchResume();">Resume</a></li>
+                            </ul>
+                        </div>
+                        
+                    </div><!-- /input-group -->
+                </div>
+            </div>
+            </form>
         </div>
         <div id="wvHost" class="row">
             <div ng-repeat="view in webviews" class="col-md-4 webviewer {{view.active && 'active' || '' }}">
@@ -30,7 +53,7 @@
                 
                 <div class="col-md-12 titleBar {{view.header || 'hide'}} {{view.active || 'notShown'}}">
                      <button type="button"  ng-click="backTrigger();" class="btn {{titleBar.showBackButton  && 'btn-default' || 'invisible'}}">
-                         << <span>{{titleBar.backLabel}}</span>
+                         &lt;&lt; <span>{{titleBar.backLabel}}</span>
                      </button>
                      <h3 class="pull-right">{{titleBar.title}}</h3>
                  </div>
@@ -43,7 +66,7 @@
                 
                  <div class="col-md-12 btn-group-justified menu {{view.menu || 'hide'}} {{view.active || 'notShown'}}">
                      <div class="btn-group" ng-repeat="menuOp in menu">
-                         <button type="button"  ng-click="menuTrigger(menuOp.menuOption);" class="btn" {{view.menu && 'btn-primary' || 'disabled' }}">
+                         <button type="button"  ng-click="menuTrigger(menuOp.menuOption);" class="btn {{view.menu && 'btn-primary' || 'disabled' }}">
                          <img ng-src="{{menuOp.icon}}" />{{menuOp.name}}
                          </button>
                      </div>
@@ -107,6 +130,7 @@
     <script src="bower_components/angular-touch/angular-touch.js"></script>
     <script src="bower_components/angular-route/angular-route.js"></script>
     <script src="bower_components/underscore/underscore.js"></script>
+    <script src="bower_components/angular-local-storage/angular-local-storage.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 

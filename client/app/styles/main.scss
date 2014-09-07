@@ -14,7 +14,7 @@ body {
 .page-header {
     padding-bottom: 4px;
     margin: 0 0 10px;
-    border-bottom: 1px solid #eeeeee;
+    border-bottom:0;
 }
 
 /* Responsive: Portrait tablets and up */
@@ -30,10 +30,7 @@ body {
   .header {
     margin-bottom: 5px;
   }
-  /* Remove the bottom border on the jumbotron for visual effect */
-  .jumbotron {
-    border-bottom: 0;
-  }
+
 }
 
 

@@ -10,6 +10,7 @@
  */
 angular
   .module('anvil2App', [
+	'LocalStorageModule',
     'ngAnimate',
     'ngCookies',
     'ngResource',

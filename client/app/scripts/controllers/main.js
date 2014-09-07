@@ -13,25 +13,47 @@ angular.module('anvil2App')
       //  Do not use in new projects.
       $sceProvider.enabled(false);
   })
-  .controller('MainCtrl',(function ($rootScope, $scope, $timeout, $http, masterOutCom, publicOutCom, inCom) {
+  .controller('MainCtrl',(function ($rootScope, $scope, $timeout, $http, localStorageService, masterOutCom, publicOutCom, inCom) {
 
       $scope.master = {url:'about:blank'};
       $scope.webviews = [];
       $scope.menu = [];
+      $scope.mainConfig = {
+        JSONMenu : 'http://test1.irontec.com/demo/menu.php?callback=JSON_CALLBACK',
+        autoInit : true
+      };
       
+      if (localStorageService.get('mainConfig')) {
+        $scope.mainConfig = localStorageService.get('mainConfig');
+      }
 
-      var url = 'http://test1.irontec.com/demo/menu.php?callback=JSON_CALLBACK';
-      
-      $http
-          .jsonp(url)
-          .success(function(data, status, headers, config) {
-              $scope.master = data.master;
-              $scope.webviews = data.webviews;
-              $scope.menu = data.menu;
-             
-          });
-          
-      
+
+      $scope.$watchCollection('mainConfig',function() {
+        localStorageService.set('mainConfig', $scope.mainConfig);
+        masterOutCom._setAutoInit($scope.mainConfig.autoInit);
+      });
+
+      masterOutCom._setAutoInit($scope.mainConfig.autoInit);
+
+      $scope.loadCurrentMenu = function() {
+        $scope.change = 0;
+	      $http
+	          .jsonp($scope.mainConfig.JSONMenu)
+	          .success(function(data, status, headers, config) {
+	              $scope.master = data.master;
+	              $scope.webviews = data.webviews;
+	              $scope.menu = data.menu;
+	             
+	          });
+      };
+
+
+      /* Si en la carga del conrtolador tenemos autoinit === true, cargamos el también el menú */
+      if ($scope.mainConfig.autoInit != 0) {
+        $scope.loadCurrentMenu();
+      }
+
+
       $scope.launchResume = function() {
           masterOutCom.resume();
       }
@@ -106,7 +128,7 @@ angular.module('anvil2App')
       });
         
       inCom.registerAction('setTitle', function(title) {
-          $scope.titleBar.title = title;
+          $scope.titleBar.title = decodeURIComponent(title);
           $scope.$apply();
       });
       
