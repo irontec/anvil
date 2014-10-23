@@ -14,7 +14,7 @@ angular.module('anvil2App')
     var masterIframe = angular.element("iframe.master:eq(0)");
     
     var _sendMessage = function(msg) {
-        masterIframe[0].contentWindow.postMessage(msg, "*");
+        masterIframe[0].contentWindow.postMessage("master:" + msg, "*");
     }
     var autoInit = false;
 
@@ -38,7 +38,6 @@ angular.module('anvil2App')
           _sendMessage('resume');
       },
       init : function() {
-        console.log("GOOO INIT");
           _sendMessage('init');
       },
       backButton : function() {

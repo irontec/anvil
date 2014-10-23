@@ -20,38 +20,24 @@ angular.module('anvil2App')
         
     }
     
-    var _sendMessage = function(domIframe, msg) {
-        domIframe.contentWindow.postMessage(msg, "*");
+    var _sendMessage = function(tabTarget, msg) {
+        var domIframe = _getIframe(tabTarget);
+        domIframe.contentWindow.postMessage("public:" + msg, "*");
     }
 
     // Public API here
     return {
         injectMessage : function (tabTarget, message) {
-            var theIframe = _getIframe(tabTarget);
-            console.log("INJECTING TO", theIframe);
-            if (theIframe) {
-                _sendMessage(theIframe, "injectMessage:" + message);
-            }
+            _sendMessage(tabTarget, "injectMessage:" + message);
         },
         beforeShow : function (tabTarget) {
-            var theIframe = _getIframe(tabTarget);
-            
-            console.log("BeforeShow to", theIframe);
-            if (theIframe) {
-                _sendMessage(theIframe, 'beforeShow:' + tabTarget);
-            }
+            _sendMessage(tabTarget, 'beforeShow:' + tabTarget);
         },
         afterShow : function (tabTarget) {
-            var theIframe = _getIframe(tabTarget);
-            if (theIframe) {
-                _sendMessage(theIframe, 'afterShow:' + tabTarget);
-            }
+            _sendMessage(tabTarget, 'afterShow:' + tabTarget);
         },
         backButton : function (tabTarget) {
-            var theIframe = _getIframe(tabTarget);
-            if (theIframe) {
-                _sendMessage(theIframe, 'backButton:' + tabTarget);
-            }
+            _sendMessage(tabTarget, 'backButton:' + tabTarget);
         },
     };
   });

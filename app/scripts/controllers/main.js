@@ -13,13 +13,15 @@ angular.module('anvil2App')
       //  Do not use in new projects.
       $sceProvider.enabled(false);
   })
-  .controller('MainCtrl',(function ($rootScope, $scope, $timeout, $http, localStorageService, masterOutCom, publicOutCom, inCom) {
+  .controller('MainCtrl',function ($window, $rootScope, $scope, $timeout, $http, localStorageService, masterOutCom, publicOutCom, inCom) {
+
+      var _ = $window._;
 
       $scope.master = {url:'about:blank'};
       $scope.webviews = [];
       $scope.menu = [];
       $scope.mainConfig = {
-        JSONMenu : 'http://test1.irontec.com/demo/menu.php?callback=JSON_CALLBACK',
+        JSONMenu : './menu.json',
         autoInit : true
       };
       
@@ -38,8 +40,8 @@ angular.module('anvil2App')
       $scope.loadCurrentMenu = function() {
         $scope.change = 0;
 	      $http
-	          .jsonp($scope.mainConfig.JSONMenu)
-	          .success(function(data, status, headers, config) {
+	          .get($scope.mainConfig.JSONMenu)
+	          .success(function(data) { // unused: status, headers, config
 	              $scope.master = data.master;
 	              $scope.webviews = data.webviews;
 	              $scope.menu = data.menu;
@@ -47,20 +49,23 @@ angular.module('anvil2App')
 	          });
       };
 
-
       /* Si en la carga del conrtolador tenemos autoinit === true, cargamos el también el menú */
-      if ($scope.mainConfig.autoInit != 0) {
+      if ($scope.mainConfig.autoInit !== 0) {
         $scope.loadCurrentMenu();
       }
 
 
       $scope.launchResume = function() {
           masterOutCom.resume();
-      }
+      };
 
-      $scope.launchInit = function() {
-          masterOutCom.init();
-      }
+      $scope.launchInit = function(lang) {
+          var config = null;
+          if (angular.isString(lang)) {
+            config = encodeURIComponent(angular.toJson({lang:lang}));
+          }
+          masterOutCom.init(config);
+      };
       
       $scope.changeUrl = function($event, index) {
           $scope.webviews[index].url = $event.target.value;
@@ -79,7 +84,7 @@ angular.module('anvil2App')
       $scope.menuTrigger = function(menuOp) {
           
           var found = false;
-          angular.forEach($scope.webviews, function(webview, index){
+          angular.forEach($scope.webviews, function(webview){
               found = found || (webview.tabName === menuOp);
               
           });
@@ -136,8 +141,8 @@ angular.module('anvil2App')
           
           var tabTarget = args.split('|')[0];
           var data = args.split('|')[1] || null;
-          publicOutCom.injectMessage(tabTarget, data);
-          
+          publicOutCom.injectMessage(tabTarget, encodeURIComponent(data));
+
       });
           
-  }));
+  });
