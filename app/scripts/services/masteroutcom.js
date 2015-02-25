@@ -37,8 +37,8 @@ angular.module('anvil2App')
       resume : function() {
           _sendMessage('resume');
       },
-      init : function() {
-          _sendMessage('init');
+      init : function(data) {
+          _sendMessage('init:' + data);
       },
       backButton : function() {
           _sendMessage('backButton');

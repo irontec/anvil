@@ -45,11 +45,11 @@
             </form>
         </div>
         <div id="wvHost" class="row">
-            <div ng-repeat="view in webviews" class="col-md-4 webviewer {{view.active && 'active' || '' }}">
+            <div ng-repeat="view in webviews" class="col-md-4 webviewer {{view.active &&  !loading && 'active' || '' }}">
                 
                 <div class="col-md-12 input-group urlBar">
                     <span class="input-group-addon {{view.active && 'bg-primary' || '' }}">{{view.tabName}}</span>
-                    <input type="text" class="form-control" placeholder="URL" value="{{view.url}}" ng-blur="changeUrl($event, $index);">
+                    <input type="text" class="form-control" placeholder="URL" value="{{calculateURL(view)}}" ng-blur="changeUrl($event, $index);">
                 </div>
                 
                 <div class="col-md-12 titleBar {{view.header || 'hide'}} {{view.active || 'notShown'}}">
@@ -60,8 +60,8 @@
                  </div>
                  
                 <div class="col-md-12 iframeContainer {{view.active && 'bg-primary' || '' }}">
-                    <iframe ng-src="{{view.url}}" class="center-block {{view.header || 'noheader'}} {{view.menu || 'nomenu'}}" data-tabName="{{view.tabName}}" frameborder="0"></iframe>
-                    <div class="overlay bg-info"></div>
+                    <iframe ng-src="{{calculateURL(view)}}" class="center-block {{view.header || 'noheader'}} {{view.menu || 'nomenu'}}" data-tabName="{{view.tabName}}" frameborder="0"></iframe>
+                    <div class="overlay bg-info text-center"><span ng-show="view.active && loading" class="label label-primary">{{loadingMessage}}</span></div>
                 </div>
                 
                 

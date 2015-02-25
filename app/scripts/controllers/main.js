@@ -13,13 +13,16 @@ angular.module('anvil2App')
       //  Do not use in new projects.
       $sceProvider.enabled(false);
   })
-  .controller('MainCtrl',function ($window, $rootScope, $scope, $timeout, $http, localStorageService, masterOutCom, publicOutCom, inCom) {
+  .controller('MainCtrl',function ($window, $location, $rootScope, $scope, $timeout, $http, localStorageService, masterOutCom, publicOutCom, inCom) {
 
       var _ = $window._;
 
       $scope.master = {url:'about:blank'};
       $scope.webviews = [];
       $scope.menu = [];
+      $scope.loading = false;
+      $scope.loadingMessage = '';
+
       $scope.mainConfig = {
         JSONMenu : './menu.json',
         autoInit : true
@@ -35,6 +38,9 @@ angular.module('anvil2App')
         masterOutCom._setAutoInit($scope.mainConfig.autoInit);
       });
 
+      if ($location.search()['jsonURL']) {
+        $scope.mainConfig.JSONMenu = $location.search()['jsonURL'];
+      }
       masterOutCom._setAutoInit($scope.mainConfig.autoInit);
 
       $scope.loadCurrentMenu = function() {
@@ -47,6 +53,17 @@ angular.module('anvil2App')
 	              $scope.menu = data.menu;
 	             
 	          });
+      };
+
+
+      $scope.calculateURL = function(view) {
+        if (view.type === 'browser') {
+          return view.location[$scope.appEnviroment.lang];
+        }
+        if (view.type === 'map') {
+          return 'about:blank;';
+        }
+        return view.url;
       };
 
       /* Si en la carga del conrtolador tenemos autoinit === true, cargamos el también el menú */
@@ -143,6 +160,18 @@ angular.module('anvil2App')
           var data = args.split('|')[1] || null;
           publicOutCom.injectMessage(tabTarget, encodeURIComponent(data));
 
+      });
+
+      inCom.registerAction('showLoading', function(message) {
+        $scope.loading = true;
+        $scope.loadingMessage = decodeURIComponent(message);
+        $scope.$apply();
+      });
+
+      inCom.registerAction('hideLoading', function(message) {
+        $scope.loading = false;
+        $scope.loadingMessage = '';
+        $scope.$apply();
       });
           
   });
