@@ -20,7 +20,6 @@
             <h1>Anvil <small>Irontec mobile development system</small></h1>
             <div class="row">
                 <div class="col-lg-12">
-            
                     <div class="input-group">
                         <span class="input-group-addon">
                             <label>
@@ -28,13 +27,12 @@
                                 autoInit
                             </label>
                         </span>
-                        <input type="text" class="form-control" placeholder="URL to JSON menu" ng-model="mainConfig.JSONMenu"  ng-change="change=1" ng-init="change=0" ng-blur="change == 0||loadCurrentMenu()">
+                        <input type="text" class="form-control" placeholder="URL to JSON menu" ng-model="mainConfig.JSONMenu"  ng-change="change=1" ng-init="change=0" ng-blur="change == 0 || loadCurrentMenu()">
                         <div class="input-group-btn">
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Actions <span class="caret"></span></button>
                             <ul class="dropdown-menu dropdown-menu-right" role="menu">
                                 <li><a href="#" ng-click="loadCurrentMenu();">Reload Menu</a></li>
-                                <li><a href="#" ng-click="launchInit('es');">Init (es)</a></li>
-                                <li><a href="#" ng-click="launchInit('eu');">Init (eu)</a></li>
+                                <li><a href="#" ng-click="launchInit();">Init</a></li>
                                 <li><a href="#" ng-click="launchResume();">Resume</a></li>
                             </ul>
                         </div>
@@ -42,14 +40,132 @@
                     </div><!-- /input-group -->
                 </div>
             </div>
-            </form>
+            
+            <div class="row text-right">
+                <div class="col-lg-12 form-inline">
+
+                    <div class="input-group">
+                        <label class="input">
+                            <input type="checkbox" ng-model="appEnviroment.removeStorage" class="input-sm"> Clean Local Storage
+                        </label>
+                    </div>
+
+
+
+
+                    <div class="input-group input-group-sm">
+                        <label class="sr-only" for="languageInjected">Device</label>
+                        <div class="input-group-addon">☎</div>
+                        <select class="form-control" ng-model="appEnviroment.fakeDevice" class="form-control form-group-sm" id="deviceInjected">
+                            <option value="ios">ios</option>
+                            <option value="android">android</option>
+                        </select>
+                    </div>
+         
+
+                    <div class="input-group input-group-sm">
+                        <label class="sr-only" for="languageInjected">Lang</label>
+                        <div class="input-group-addon">⚐</div>
+                        <select class="form-control" ng-model="appEnviroment.lang" class="form-control form-group-sm" id="languageInjected">
+                            <option value="es">es</option>
+                            <option value="eu">eu</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label class="input">
+                            <input type="checkbox" ng-model="appEnviroment.gprs" class="input-sm"> GPRS
+                        </label>
+                    </div>
+                    <div class="input-group">
+                        <label>
+                            <input type="checkbox" ng-model="appEnviroment.wifi" class="input-sm"> WIFI
+                        </label>
+                    </div>
+                    <div class="input-group">
+                        <label class="input">
+                            <input type="checkbox" ng-model="appEnviroment.sim" class="input-sm"> SIM
+                        </label>
+                    </div>
+                   
+                    <div class="input-group input-group-sm">
+                        <label class="sr-only" for="languageInjected">ESSID</label>
+                        <div class="input-group-addon">⚡</div>
+                        <input type="text" ng-model="appEnviroment.ssid" class="form-control" placeholder="essid">
+                    </div>
+
+                </div>
+            </div>
+
+
+            <div class="row text-right">
+                <div class="col-lg-12 form-inline">
+                    <div class="input-group input-group-sm">
+                        <label class="sr-only" for="languageInjected">IMEI</label>
+                        <div class="input-group-addon">IMEI</div>
+                        <input type="text" ng-model="appEnviroment.imei" class="form-control" placeholder="IMEI">
+                    </div>
+                    <div class="input-group input-group-sm">
+                        <label class="sr-only" for="languageInjected">IMSI</label>
+                        <div class="input-group-addon">IMSI</div>
+                        <input type="text" ng-model="appEnviroment.imsi" class="form-control" placeholder="IMSI">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row text-right">
+                <div class="col-lg-12 form-inline">
+                    <span class="label label-warning" ng-show="wifi.requested">WIFI Connection Requested [{{wifi.connData}}]</span>
+                    <span class="label label-warning" ng-show="wifi.signal">WIFI Signal Requested</span>
+                    ESSID [<strong> {{appEnviroment.ssid}} </strong>]
+
+                    <div class="input-group input-group-sm">
+                        <label>
+                            <input type="checkbox" ng-model="wifi.reachable" class="input-sm"> Reachable
+                        </label>
+                        <label>
+                            <input type="checkbox" ng-model="wifi.configured" class="input-sm"> Configurada
+                        </label>
+                        <input type="text" class="form-control" ng-model="wifi.signalValue" autocomplete="off" style="width:75px;" placeholder="signal?">
+                        <span class="input-group-btn">
+                            <button class="btn btn-primary" type="button" ng-click="wifi.signalAction()">notifyWIFISignalStrength</button>
+                        </span>
+                    </div>
+
+                    <div class="input-group input-group-sm">
+                        <input type="text" class="form-control" ng-model="wifi.error" placeholder="error?">
+                        <span class="input-group-btn">
+                            <button class="btn btn-danger" ng-click="wifi.koAction()" type="button">notifyWiFiConnectionError</button>
+                        </span>
+                    </div>
+                    
+                    <button class="btn btn-success btn-sm" ng-click="wifi.okAction()">notifyWiFiConnectionSuccess</button>
+                    
+                </div>
+            </div>
+
+
+            <div class="row text-right">
+                <div class="col-lg-12 form-inline">
+                    <span class="label label-warning" ng-show="sms.register">register SMS Source ({{sms.sourceNumber}})</span>
+                    <span class="label label-warning" ng-show="sms.deregister">deRegister SMS Source ({{sms.sourceNumber}})</span>
+                    <div class="input-group input-group-sm">
+                        <input type="text" class="form-control" ng-model="sms.fromNumber" placeholder="number?">
+                    </div>
+                    <div class="input-group input-group-sm">
+                        <input type="text" class="form-control" ng-model="sms.text" placeholder="text?">
+                    </div>
+                    <button class="btn btn-info btn-sm" type="button" ng-click="sms.smsSend()">notifySMSArrived</button>
+                </div>
+            </div>
+
+
         </div>
         <div id="wvHost" class="row">
-            <div ng-repeat="view in webviews" class="col-md-4 webviewer {{view.active && 'active' || '' }}">
+            <div ng-repeat="view in webviews" class="col-md-4 webviewer {{view.active && !loading && 'active' || '' }}">
                 
                 <div class="col-md-12 input-group urlBar">
                     <span class="input-group-addon {{view.active && 'bg-primary' || '' }}">{{view.tabName}}</span>
-                    <input type="text" class="form-control" placeholder="URL" value="{{view.url}}" ng-blur="changeUrl($event, $index);">
+                    <input type="text" class="form-control" placeholder="URL" value="{{calculateURL(view)}}" ng-blur="changeUrl($event, $index);">
                 </div>
                 
                 <div class="col-md-12 titleBar {{view.header || 'hide'}} {{view.active || 'notShown'}}">
@@ -60,8 +176,8 @@
                  </div>
                  
                 <div class="col-md-12 iframeContainer {{view.active && 'bg-primary' || '' }}">
-                    <iframe ng-src="{{view.url}}" class="center-block {{view.header || 'noheader'}} {{view.menu || 'nomenu'}}" data-tabName="{{view.tabName}}" frameborder="0"></iframe>
-                    <div class="overlay bg-info"></div>
+                    <iframe ng-src="{{calculateURL(view)}}" class="center-block {{view.header || 'noheader'}} {{view.menu || 'nomenu'}}" data-tabName="{{view.tabName}}" frameborder="0"></iframe>
+                    <div class="overlay bg-info text-center"><span ng-show="view.active && loading" class="label label-primary">{{loadingMessage}}</span></div>
                 </div>
                 
                 
@@ -130,6 +246,7 @@
         <script src="scripts/services/incom.js"></script>
         <script src="scripts/services/masteroutcom.js"></script>
         <script src="scripts/services/publicoutcom.js"></script>
+        <script src="scripts/services/comwifioutcom.js"></script>
         <!-- endbuild -->
 </body>
 </html>

@@ -97,6 +97,15 @@ div.webviewer.active {
     }
 }
 
+div.webviewer.loading {
+   div.overlay {
+        display: block;
+    }
+    iframe {
+        border: 0px;
+    }
+}
+
 div.mainConsole {
     .input-group-addon {
         background: #3276b1;

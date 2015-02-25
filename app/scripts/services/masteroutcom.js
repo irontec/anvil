@@ -17,11 +17,12 @@ angular.module('anvil2App')
         masterIframe[0].contentWindow.postMessage("master:" + msg, "*");
     }
     var autoInit = false;
+    var autoInitDataGetter = function() { return ''; };
 
     masterIframe.bind('load', function() {
         if (autoInit) {
             $timeout(function() {
-              _sendMessage('init');
+              _sendMessage('init:' + autoInitDataGetter());
             },500);  
         }
     });
@@ -34,11 +35,11 @@ angular.module('anvil2App')
       afterShow : function (tabName) {
           _sendMessage('afterShow:' + tabName);
       },
-      resume : function() {
-          _sendMessage('resume');
+      resume : function(data) {
+          _sendMessage('resume:' + data);
       },
-      init : function() {
-          _sendMessage('init');
+      init : function(data) {
+          _sendMessage('init:' + data);
       },
       backButton : function() {
           _sendMessage('backButton');
@@ -46,8 +47,15 @@ angular.module('anvil2App')
       menuButton : function(menuOp) {
           _sendMessage('menuButton:' + menuOp);
       },
-      _setAutoInit : function(value) {
+      notifyEnviroment : function(data) {
+          _sendMessage('notifyEnviroment:'+data);
+      },
+      _setAutoInit : function(value, getter) {
           autoInit = value;
+          if (angular.isFunction(getter)) {
+            autoInitDataGetter = getter;
+          }
       }
+
     };
   }]);

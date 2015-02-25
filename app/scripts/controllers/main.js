@@ -13,13 +13,32 @@ angular.module('anvil2App')
       //  Do not use in new projects.
       $sceProvider.enabled(false);
   })
-  .controller('MainCtrl',function ($window, $rootScope, $scope, $timeout, $http, localStorageService, masterOutCom, publicOutCom, inCom) {
+  .controller('MainCtrl',function ($window, $location, $rootScope, $scope, $timeout, $http, localStorageService, masterOutCom, publicOutCom, comwifiOutCom, inCom) {
 
       var _ = $window._;
+
 
       $scope.master = {url:'about:blank'};
       $scope.webviews = [];
       $scope.menu = [];
+      $scope.loading = false;
+      $scope.loadingMessage = '';
+      $scope.appEnviroment = {
+        'lang' : 'es',
+        'ssid' : '',
+        'fakeDevice' : 'ios',
+        'gprs' : true,
+        'wifi' : false,
+        'sim' : true,
+        'imsi': '',
+        'imei': '',
+        'removeStorage': false
+      };
+
+      var getEnviromentParam = function() {
+        return encodeURIComponent(angular.toJson($scope.appEnviroment));
+      };
+
       $scope.mainConfig = {
         JSONMenu : './menu.json',
         autoInit : true
@@ -32,8 +51,12 @@ angular.module('anvil2App')
 
       $scope.$watchCollection('mainConfig',function() {
         localStorageService.set('mainConfig', $scope.mainConfig);
-        masterOutCom._setAutoInit($scope.mainConfig.autoInit);
+        masterOutCom._setAutoInit($scope.mainConfig.autoInit, getEnviromentParam);
       });
+
+      if ($location.search()['jsonURL']) {
+        $scope.mainConfig.JSONMenu = $location.search()['jsonURL'];
+      }
 
       masterOutCom._setAutoInit($scope.mainConfig.autoInit);
 
@@ -54,17 +77,22 @@ angular.module('anvil2App')
         $scope.loadCurrentMenu();
       }
 
-
-      $scope.launchResume = function() {
-          masterOutCom.resume();
+      $scope.calculateURL = function(view) {
+        if (view.type === 'browser') {
+          return view.location[$scope.appEnviroment.lang];
+        }
+        if (view.type === 'map') {
+          return 'about:blank;';
+        }
+        return view.url;
       };
 
-      $scope.launchInit = function(lang) {
-          var config = null;
-          if (angular.isString(lang)) {
-            config = encodeURIComponent(angular.toJson({lang:lang}));
-          }
-          masterOutCom.init(config);
+      $scope.launchResume = function() {
+        masterOutCom.resume(getEnviromentParam());
+      };
+
+      $scope.launchInit = function() {
+        masterOutCom.init(getEnviromentParam());
       };
       
       $scope.changeUrl = function($event, index) {
@@ -92,7 +120,7 @@ angular.module('anvil2App')
           if (found) {
             inCom.triggerAction('showTab', [menuOp]);
           } else {
-              masterOutCom.menuButton(menuOp);
+            masterOutCom.menuButton(menuOp);
           } 
       };
       
@@ -127,22 +155,118 @@ angular.module('anvil2App')
       });
 
       inCom.registerAction('hideBackButton', function() {
-          $scope.titleBar.backLabel = '';
-          $scope.titleBar.showBackButton = false;
-          $scope.$apply();
+        $scope.titleBar.backLabel = '';
+        $scope.titleBar.showBackButton = false;
+        $scope.$apply();
       });
         
       inCom.registerAction('setTitle', function(title) {
-          $scope.titleBar.title = decodeURIComponent(title);
-          $scope.$apply();
+        $scope.titleBar.title = decodeURIComponent(title);
+        $scope.$apply();
       });
       
       inCom.registerAction('deliverMessage', function(args) {
-          
-          var tabTarget = args.split('|')[0];
-          var data = args.split('|')[1] || null;
-          publicOutCom.injectMessage(tabTarget, encodeURIComponent(data));
+        var tabTarget = args.split('|')[0];
+        var data = args.split('|')[1] || null;
+        publicOutCom.injectMessage(tabTarget, encodeURIComponent(data));
+      });
+      
+      inCom.registerAction('showLoading', function(message) {
+        $scope.loading = true;
+        $scope.loadingMessage = message;
+        $scope.$apply();
+      });
+
+      inCom.registerAction('showLoading', function(message) {
+        $scope.loading = true;
+        $scope.loadingMessage = decodeURIComponent(message);
+        $scope.$apply();
+      });
+      
+      inCom.registerAction('hideLoading', function(message) {
+        $scope.loading = false;
+        $scope.loadingMessage = '';
+        $scope.$apply();
+      });
+
+      inCom.registerAction('requestEnviroment',function() {
+        masterOutCom.notifyEnviroment(getEnviromentParam());
+      });
+
+
+      /* COMWIFI ESPECIFIC! */
+
+      $scope.wifi = {
+        requested : false,
+        signal : false,
+        reachable : true,
+        signalValue : '0',
+        configured: false,
+        error : '',
+        okAction : function() {
+          comwifiOutCom.notifyWiFiConnectionSuccess($scope.appEnviroment.ssid);
+        },
+        koAction : function() {
+          comwifiOutCom.notifyWiFiConnectionError({error : $scope.wifi.error});
+        },
+        signalAction : function() {
+          comwifiOutCom.notifyWiFiSignalStrength({reachable:$scope.wifi.reachable, configured: $scope.wifi.configured, quality: $scope.wifi.signalValue});
+        }
+      };
+      $scope.sms = {
+        register : false,
+        connData : '',
+        deregister : false,
+        sourceNumber : 'n/a',
+        fromNumber : '',
+        text : '',
+        smsSend : function() {
+          comwifiOutCom.notifySMSArrived({number: $scope.sms.fromNumber, text: $scope.sms.text});
+        }
+
+      };
+
+      inCom.registerAction('requestWiFiConnection',function(data) {
+        $scope.wifi.connData = data;
+        $scope.wifi.requested = true;
+        $timeout(function() {
+          $scope.wifi.requested = false;
+          $scope.$apply();
+        },3000);
+        $scope.$apply();
+      });
+
+      inCom.registerAction('requestWiFiSignalStrength',function() {
+        $scope.wifi.signal = true;
+        $timeout(function() {
+          $scope.wifi.signal = false;
+          $scope.$apply();
+        },3000);
+        $scope.wifi.signalAction();
+        $scope.$apply();
+      });
+
+      inCom.registerAction('registerSMSSource',function(sourceNumber) {
+        $scope.sms.sourceNumber = sourceNumber;
+        $scope.sms.register = true;
+        $timeout(function() {
+          $scope.sms.register = false;
+          $scope.$apply();
+        },3000);
+        $scope.$apply();
+      });
+
+      inCom.registerAction('deRegisterSMSSource',function(sourceNumber) {
+        $scope.sms.deregister = true;
+        $scope.sms.sourceNumber = sourceNumber;
+        $timeout(function() {
+          $scope.sms.deregister = false;
+          $scope.$apply();
+        },3000);
+        $scope.$apply();
 
       });
+      
+
           
   });

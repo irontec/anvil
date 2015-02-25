@@ -13,7 +13,7 @@ angular.module('anvil2App')
     var actions = {};
       
     angular.element($window).bind('message', function(e)  {
-        
+
         var action = e.originalEvent.data.split(":")[0];
         if (typeof actions[action] == 'function') {
             actions[action](e.originalEvent.data.split(":")[1] || undefined);
