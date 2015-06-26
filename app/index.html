@@ -49,7 +49,7 @@
                 
                 <div class="col-md-12 input-group urlBar">
                     <span class="input-group-addon {{view.active && 'bg-primary' || '' }}">{{view.tabName}}</span>
-                    <input type="text" class="form-control" placeholder="URL" value="{{calculateURL(view)}}" ng-blur="changeUrl($event, $index);">
+                    <input type="text" class="form-control" placeholder="URL" value="{{ calculateURL(view) }}" ng-blur="changeUrl($event, $index);">
                 </div>
                 
                 <div class="col-md-12 titleBar {{view.header || 'hide'}} {{view.active || 'notShown'}}">

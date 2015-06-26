@@ -23,6 +23,8 @@ angular.module('anvil2App')
       $scope.loading = false;
       $scope.loadingMessage = '';
 
+      $scope.lang = 'es';
+
       $scope.mainConfig = {
         JSONMenu : './menu.json',
         autoInit : true
@@ -58,11 +60,15 @@ angular.module('anvil2App')
 
       $scope.calculateURL = function(view) {
         if (view.type === 'browser') {
-          return view.location[$scope.appEnviroment.lang];
+          return view.location[$scope.lang];
         }
         if (view.type === 'map') {
           return 'about:blank;';
         }
+        if (!view.url) {
+          return 'about:blank';
+        }
+
         return view.url;
       };
 
@@ -79,6 +85,7 @@ angular.module('anvil2App')
       $scope.launchInit = function(lang) {
           var config = null;
           if (angular.isString(lang)) {
+            $scope.lang = lang;
             config = encodeURIComponent(angular.toJson({lang:lang}));
           }
           masterOutCom.init(config);
