@@ -20,11 +20,11 @@
             <h1>Anvil <small>Irontec mobile development system</small></h1>
             <div class="row">
                 <div class="col-lg-12">
-            
+
                     <div class="input-group">
                         <span class="input-group-addon">
                             <label>
-                                <input type="checkbox" ng-model="mainConfig.autoInit" ng-true-value="1" ng-false-value="0">
+                                <input type="checkbox" ng-model="mainConfig.autoInit">
                                 autoInit
                             </label>
                         </span>
@@ -33,38 +33,84 @@
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Actions <span class="caret"></span></button>
                             <ul class="dropdown-menu dropdown-menu-right" role="menu">
                                 <li><a href="#" ng-click="loadCurrentMenu();">Reload Menu</a></li>
-                                <li><a href="#" ng-click="launchInit('es');">Init (es)</a></li>
-                                <li><a href="#" ng-click="launchInit('eu');">Init (eu)</a></li>
+                                <li><a href="#" ng-click="launchInit();">Init</a></li>
                                 <li><a href="#" ng-click="launchResume();">Resume</a></li>
                             </ul>
                         </div>
-                        
+
                     </div><!-- /input-group -->
                 </div>
             </div>
+
+            <div class="row margin-top">
+                <div class="col-lg-12">
+                    <span class="label label-primary">Opciones de arranque</span>
+                </div>
+            </div>
+
+            <div class="row">
+
+                <div class="col-lg-5">
+
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <label>
+                                <input type="checkbox" ng-model="mainConfig.imeiCheck" ng-true-value="1" ng-false-value="0">&nbsp;imei
+                            </label>
+                        </span>
+                        <input ng-disabled="mainConfig.imeiCheck == 0" type="text" class="form-control" placeholder="IMEI" ng-model="mainConfig.imei">
+                    </div>
+                </div>
+
+                <div class="col-lg-5">
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <label>
+                                <input type="checkbox" ng-model="mainConfig.imsiCheck" ng-true-value="1" ng-false-value="0">&nbsp;imsi
+                            </label>
+                        </span>
+                        <input ng-disabled="mainConfig.imsiCheck == 0" type="text" class="form-control" placeholder="IMSI" ng-model="mainConfig.imsi">
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <label>
+                                lang
+                            </label>
+                        </span>
+                        <select class="form-control" ng-model="mainConfig.lang">
+                          <option value="es">es</option>
+                          <option value="eu">eu</option>
+                        </select>
+                    </div>
+                </div>
+
+            </div>
+
             </form>
         </div>
         <div id="wvHost" class="row">
             <div ng-repeat="view in webviews" class="col-md-4 webviewer {{view.active &&  !loading && 'active' || '' }}">
-                
+
                 <div class="col-md-12 input-group urlBar">
                     <span class="input-group-addon {{view.active && 'bg-primary' || '' }}">{{view.tabName}}</span>
                     <input type="text" class="form-control" placeholder="URL" value="{{ calculateURL(view) }}" ng-blur="changeUrl($event, $index);">
                 </div>
-                
+
                 <div class="col-md-12 titleBar {{view.header || 'hide'}} {{view.active || 'notShown'}}">
                      <button type="button"  ng-click="backTrigger();" class="btn {{titleBar.showBackButton  && 'btn-default' || 'invisible'}}">
                          &lt;&lt; <span>{{titleBar.backLabel}}</span>
                      </button>
                      <h3 class="pull-right">{{titleBar.title}}</h3>
                  </div>
-                 
+
                 <div class="col-md-12 iframeContainer {{view.active && 'bg-primary' || '' }}">
                     <iframe ng-src="{{calculateURL(view)}}" class="center-block {{view.header || 'noheader'}} {{view.menu || 'nomenu'}}" data-tabName="{{view.tabName}}" frameborder="0"></iframe>
                     <div class="overlay bg-info text-center"><span ng-show="view.active && loading" class="label label-primary">{{loadingMessage}}</span></div>
                 </div>
-                
-                
+
+
                  <div class="col-md-12 btn-group-justified menu {{view.menu || 'hide'}} {{view.active || ''}}">
                      <div class="btn-group" ng-repeat="menuOp in menu">
                          <button type="button"  ng-click="menuTrigger(menuOp.menuOption);" class="btn {{view.menu && 'btn-primary' || 'disabled' }}">
@@ -72,11 +118,11 @@
                          </button>
                      </div>
                  </div>
-             
-                
+
+
             </div>
         </div>
-        
+
         <div class="row mainConsole">
             <div class="col-md-12 input-group urlBar">
                     <span class="input-group-addon">MASTER WEBVIEW</span>

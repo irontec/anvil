@@ -85,12 +85,12 @@ div.webviewer.active {
         border: 2px solid black;
         background: #ffffff;
     }
-    
+
     div.overlay {
         display: none;
-        
-    }   
-    
+
+    }
+
     .input-group-addon {
         background: #3276b1;
         color: #fff;
@@ -123,7 +123,7 @@ div.overlay {
     display: block;
     z-index:5;
     opacity:0.9;
-}   
+}
 
 .notShown {
     opacity: 0;
@@ -131,22 +131,28 @@ div.overlay {
 
 iframe.master {
     height: 240px;
-    width:100%;    
+    width:100%;
 }
 
 .titleBar {
     padding:0;
-    
+
     h3 {
         margin:0;
         display: block;
     }
-    
+
     button {
         visibility: visible;
     }
-    
+
     button.invisible {
         visibility: hidden;
     }
+}
+
+
+div.margin-top {
+    margin-top: 10px;
+    margin-bottom: 5px;
 }

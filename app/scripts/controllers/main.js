@@ -27,9 +27,14 @@ angular.module('anvil2App')
 
       $scope.mainConfig = {
         JSONMenu : './menu.json',
-        autoInit : true
+        autoInit : true,
+        lang: 'es',
+        imeiCheck : true,
+        imei: '',
+        imsiCheck : true,
+        imsi: ''
       };
-      
+
       if (localStorageService.get('mainConfig')) {
         $scope.mainConfig = localStorageService.get('mainConfig');
       }
@@ -37,13 +42,16 @@ angular.module('anvil2App')
 
       $scope.$watchCollection('mainConfig',function() {
         localStorageService.set('mainConfig', $scope.mainConfig);
-        masterOutCom._setAutoInit($scope.mainConfig.autoInit);
       });
 
       if ($location.search()['jsonURL']) {
         $scope.mainConfig.JSONMenu = $location.search()['jsonURL'];
       }
-      masterOutCom._setAutoInit($scope.mainConfig.autoInit);
+      masterOutCom._setLoadCallback(function() {
+        if ($scope.mainConfig.autoInit === true) {
+          $scope.launchInit();
+        }
+      });
 
       $scope.loadCurrentMenu = function() {
         $scope.change = 0;
@@ -53,7 +61,7 @@ angular.module('anvil2App')
 	              $scope.master = data.master;
 	              $scope.webviews = data.webviews;
 	              $scope.menu = data.menu;
-	             
+
 	          });
       };
 
@@ -73,7 +81,7 @@ angular.module('anvil2App')
       };
 
       /* Si en la carga del conrtolador tenemos autoinit === true, cargamos el también el menú */
-      if ($scope.mainConfig.autoInit !== 0) {
+      if ($scope.mainConfig.autoInit === true) {
         $scope.loadCurrentMenu();
       }
 
@@ -82,15 +90,23 @@ angular.module('anvil2App')
           masterOutCom.resume();
       };
 
-      $scope.launchInit = function(lang) {
+      $scope.launchInit = function() {
           var config = null;
-          if (angular.isString(lang)) {
-            $scope.lang = lang;
-            config = encodeURIComponent(angular.toJson({lang:lang}));
+          var data = {
+            lang : $scope.mainConfig.lang
+          };
+
+          if ($scope.mainConfig.imeiCheck == 1) {
+            data.imei = $scope.mainConfig.imei;
           }
+          if ($scope.mainConfig.imsiCheck == 1) {
+            data.imsi = $scope.mainConfig.imsi;
+          }
+          $scope.lang = data.lang;
+          config = encodeURIComponent(angular.toJson(data));
           masterOutCom.init(config);
       };
-      
+
       $scope.changeUrl = function($event, index) {
           $scope.webviews[index].url = $event.target.value;
       };
@@ -98,7 +114,7 @@ angular.module('anvil2App')
       $scope.changeMasterUrl = function($event) {
           $scope.master.url = $event.target.value;
       };
-      
+
       $scope.titleBar = {
         backLabel : '',
         title : '',
@@ -106,20 +122,20 @@ angular.module('anvil2App')
       };
 
       $scope.menuTrigger = function(menuOp) {
-          
+
           var found = false;
           angular.forEach($scope.webviews, function(webview){
               found = found || (webview.tabName === menuOp);
-              
+
           });
 
           if (found) {
             inCom.triggerAction('showTab', [menuOp]);
           } else {
               masterOutCom.menuButton(menuOp);
-          } 
+          }
       };
-      
+
       $scope.backTrigger = function() {
           masterOutCom.backButton();
           publicOutCom.backButton(_.find($scope.webviews,function(webview) {
@@ -128,7 +144,7 @@ angular.module('anvil2App')
       };
 
       inCom.registerAction('showTab', function(targetTab) {
-          
+
           masterOutCom.beforeShow(targetTab);
           publicOutCom.beforeShow(targetTab);
 
@@ -137,13 +153,13 @@ angular.module('anvil2App')
           });
           masterOutCom.afterShow(targetTab);
           publicOutCom.afterShow(targetTab);
-          
+
           $timeout(function() {
               $scope.$apply();
             }, 0, false);
-          
+
       });
-      
+
       inCom.registerAction('showBackButton', function(label) {
           $scope.titleBar.backLabel = label || '';
           $scope.titleBar.showBackButton = true;
@@ -155,14 +171,14 @@ angular.module('anvil2App')
           $scope.titleBar.showBackButton = false;
           $scope.$apply();
       });
-        
+
       inCom.registerAction('setTitle', function(title) {
           $scope.titleBar.title = decodeURIComponent(title);
           $scope.$apply();
       });
-      
+
       inCom.registerAction('deliverMessage', function(args) {
-          
+
           var tabTarget = args.split('|')[0];
           var data = args.split('|')[1] || null;
           publicOutCom.injectMessage(tabTarget, encodeURIComponent(data));
@@ -180,5 +196,5 @@ angular.module('anvil2App')
         $scope.loadingMessage = '';
         $scope.$apply();
       });
-          
+
   });

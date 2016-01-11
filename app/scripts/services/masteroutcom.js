@@ -12,17 +12,16 @@ angular.module('anvil2App')
     // Service logic
 
     var masterIframe = angular.element("iframe.master:eq(0)");
-    
+
     var _sendMessage = function(msg) {
         masterIframe[0].contentWindow.postMessage("master:" + msg, "*");
     }
     var autoInit = false;
+    var loadCallback = false;
 
     masterIframe.bind('load', function() {
-        if (autoInit) {
-            $timeout(function() {
-              _sendMessage('init');
-            },500);  
+        if (angular.isFunction(loadCallback)) {
+            $timeout(loadCallback, 500);
         }
     });
 
@@ -46,8 +45,8 @@ angular.module('anvil2App')
       menuButton : function(menuOp) {
           _sendMessage('menuButton:' + menuOp);
       },
-      _setAutoInit : function(value) {
-          autoInit = value;
+      _setLoadCallback : function(callback) {
+          loadCallback = callback;
       }
     };
   }]);
