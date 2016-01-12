@@ -32,7 +32,8 @@ angular.module('anvil2App')
         imeiCheck : true,
         imei: '',
         imsiCheck : true,
-        imsi: ''
+        imsi: '',
+        clearAll: false
       };
 
       if (localStorageService.get('mainConfig')) {
@@ -76,7 +77,6 @@ angular.module('anvil2App')
         if (!view.url) {
           return 'about:blank';
         }
-
         return view.url;
       };
 
@@ -84,7 +84,6 @@ angular.module('anvil2App')
       if ($scope.mainConfig.autoInit === true) {
         $scope.loadCurrentMenu();
       }
-
 
       $scope.launchResume = function() {
           masterOutCom.resume();
@@ -103,6 +102,8 @@ angular.module('anvil2App')
             data.imsi = $scope.mainConfig.imsi;
           }
           $scope.lang = data.lang;
+          data.clearAll = $scope.mainConfig.clearAll;
+
           config = encodeURIComponent(angular.toJson(data));
           masterOutCom.init(config);
       };
