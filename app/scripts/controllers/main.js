@@ -89,6 +89,10 @@ angular.module('anvil2App')
           masterOutCom.resume();
       };
 
+      $scope.launchLogout = function() {
+          masterOutCom.logout();
+      };
+
       $scope.launchInit = function() {
           var config = null;
           var data = {

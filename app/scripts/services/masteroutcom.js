@@ -39,6 +39,9 @@ angular.module('anvil2App')
       init : function(data) {
           _sendMessage('init:' + data);
       },
+      logout : function() {
+          _sendMessage('logout');
+      },
       backButton : function() {
           _sendMessage('backButton');
       },
