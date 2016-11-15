@@ -33,6 +33,8 @@ angular.module('anvil2App')
         imei: '',
         imsiCheck : true,
         imsi: '',
+        simserialCheck : true,
+        simserial: '',
         clearAll: false
       };
 
@@ -104,6 +106,9 @@ angular.module('anvil2App')
           }
           if ($scope.mainConfig.imsiCheck == 1) {
             data.imsi = $scope.mainConfig.imsi;
+          }
+          if ($scope.mainConfig.simserialCheck == 1) {
+            data.simserial = $scope.mainConfig.simserial;
           }
           $scope.lang = data.lang;
           data.clearAll = $scope.mainConfig.clearAll;

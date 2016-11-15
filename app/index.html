@@ -51,7 +51,7 @@
 
             <div class="row">
 
-                <div class="col-lg-4">
+                <div class="col-lg-3">
 
                     <div class="input-group">
                         <span class="input-group-addon">
@@ -63,7 +63,7 @@
                     </div>
                 </div>
 
-                <div class="col-lg-5">
+                <div class="col-lg-3">
                     <div class="input-group">
                         <span class="input-group-addon">
                             <label>
@@ -73,7 +73,18 @@
                         <input ng-disabled="mainConfig.imsiCheck == 0" type="text" class="form-control" placeholder="IMSI" ng-model="mainConfig.imsi">
                     </div>
                 </div>
-                <div class="col-lg-2">
+                <div class="col-lg-3">
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <label>
+                                <input type="checkbox" ng-model="mainConfig.simserialCheck" ng-true-value="1" ng-false-value="0">&nbsp;SIMSerial
+                            </label>
+                        </span>
+                        <input ng-disabled="mainConfig.simserialCheck == 0" type="text" class="form-control" placeholder="SimSerial" ng-model="mainConfig.simserial">
+                    </div>
+                </div>
+
+                <div class="col-lg-1">
                     <div class="input-group">
                         <span class="input-group-addon">
                             <label>
@@ -86,7 +97,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="col-lg-1">
+                <div class="col-lg-2">
                     <div class="">
                         <span class="input">
                             <label>
